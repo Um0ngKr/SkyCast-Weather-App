@@ -1,0 +1,331 @@
+SKYCAST — SETUP AND USAGE GUIDE
+================================
+
+This guide explains how to download SkyCast from GitHub, configure the API key, run the application, create a Desktop shortcut, and build a Windows executable and installer.
+
+GitHub Repository:
+https://github.com/Um0ngKr/SkyCast-Weather-App
+
+
+1. REQUIREMENTS
+---------------
+
+- Windows 10 or later
+- Python 3.10 or later
+- Git (optional if downloading a ZIP)
+- An OpenWeatherMap API key
+- Internet connection
+
+For Windows installer creation:
+- PyInstaller
+- Inno Setup
+
+
+2. DOWNLOAD SKYCAST FROM GITHUB
+-------------------------------
+
+Open PowerShell or the VS Code terminal and run:
+
+git clone https://github.com/Um0ngKr/SkyCast-Weather-App.git
+
+cd SkyCast-Weather-App
+
+Alternatively, download the repository ZIP from GitHub and extract it.
+
+Open the extracted project folder in Visual Studio Code.
+
+
+3. CREATE THE .env FILE
+-----------------------
+
+IMPORTANT:
+The real .env file is private and should not be uploaded to GitHub.
+
+Create a file named exactly:
+
+.env
+
+Create it in the project root, beside main.py and config.py.
+
+Do NOT create it inside assets, ui, services, or the weather folder.
+
+Open .env.example and copy its template into the new .env file.
+
+The .env file should contain:
+
+OPENWEATHERMAP_API_KEY=your_actual_api_key_here
+
+Replace your_actual_api_key_here with your own OpenWeatherMap API key.
+
+Do not leave the placeholder value.
+Quotes are normally unnecessary.
+
+Keep the real API key private.
+Never paste it into public source code, README files, screenshots, or GitHub commits.
+
+
+4. CREATE A PYTHON VIRTUAL ENVIRONMENT
+--------------------------------------
+
+Open the VS Code terminal in the project root.
+
+Run:
+
+python -m venv .venv
+
+Activate it in PowerShell:
+
+.\.venv\Scripts\Activate.ps1
+
+If PowerShell activation is blocked, use Command Prompt:
+
+.venv\Scripts\activate.bat
+
+
+5. INSTALL DEPENDENCIES
+-----------------------
+
+Run:
+
+python -m pip install -r requirements.txt
+
+Wait until installation finishes.
+
+
+6. RUN SKYCAST FROM VS CODE
+---------------------------
+
+Open main.py in VS Code.
+
+Open Terminal > New Terminal.
+
+Make sure the terminal is in the project root and the virtual environment is activated.
+
+Run:
+
+python main.py
+
+The SkyCast desktop application should open.
+
+After changing Python code, close the app and run python main.py again to test the changes.
+
+
+7. CREATE A DESKTOP SHORTCUT FOR THE PYTHON VERSION
+---------------------------------------------------
+
+This shortcut launches SkyCast using the project's Python environment.
+
+Run the following PowerShell script from the project root after creating .venv:
+
+$project = (Get-Location).Path
+$python = Join-Path $project ".venv\Scripts\python.exe"
+$main = Join-Path $project "main.py"
+$desktop = [Environment]::GetFolderPath("Desktop")
+$shortcutPath = Join-Path $desktop "SkyCast (Development).lnk"
+
+$wsh = New-Object -ComObject WScript.Shell
+$shortcut = $wsh.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = $python
+$shortcut.Arguments = "`"$main`""
+$shortcut.WorkingDirectory = $project
+$shortcut.Description = "Launch SkyCast from Python source"
+$shortcut.Save()
+
+A Desktop shortcut named SkyCast (Development) should appear.
+
+Keep the project folder and .env file in place. Moving or deleting the project folder can break this shortcut.
+
+
+8. BUILD THE WINDOWS EXE WITH THE CUSTOM ICON
+--------------------------------------------
+
+Make sure the custom icon exists here:
+
+assets\SkyCast.ico
+
+Install PyInstaller if needed:
+
+python -m pip install pyinstaller
+
+Run this command from the project root:
+
+python -m PyInstaller --noconfirm --clean --windowed --name SkyCast --icon "assets\SkyCast.ico" --add-data "assets;assets" --distpath ".\dist_icon" --workpath ".\build_icon" main.py
+
+The executable should be created here:
+
+dist_icon\SkyCast\SkyCast.exe
+
+Keep the complete SkyCast folder, including the _internal folder.
+Do not copy only the EXE file.
+
+
+9. CONFIGURE .env FOR THE PACKAGED EXE
+--------------------------------------
+
+The current packaged configuration loads .env from beside the executable.
+
+Copy your private project-root .env file into:
+
+dist_icon\SkyCast\.env
+
+The folder should contain:
+
+dist_icon
+  SkyCast
+    SkyCast.exe
+    .env
+    _internal\
+
+Do NOT place .env inside _internal.
+
+Do NOT upload .env to GitHub or include your personal API key in a public installer.
+
+To run the packaged application from PowerShell:
+
+Start-Process ".\dist_icon\SkyCast\SkyCast.exe" -WorkingDirectory ".\dist_icon\SkyCast"
+
+Check that weather data loads correctly.
+
+
+10. CREATE A DESKTOP SHORTCUT FOR THE PACKAGED EXE
+--------------------------------------------------
+
+Run this PowerShell script from the project root after building the EXE:
+
+$project = (Get-Location).Path
+$exe = Join-Path $project "dist_icon\SkyCast\SkyCast.exe"
+$desktop = [Environment]::GetFolderPath("Desktop")
+$shortcutPath = Join-Path $desktop "SkyCast.lnk"
+
+$wsh = New-Object -ComObject WScript.Shell
+$shortcut = $wsh.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = $exe
+$shortcut.WorkingDirectory = Split-Path $exe
+$shortcut.Description = "Launch SkyCast Weather"
+$shortcut.Save()
+
+The SkyCast shortcut should appear on the Desktop.
+
+The EXE and its _internal folder must remain together. If the build folder is moved, recreate the shortcut.
+
+
+11. BUILD THE WINDOWS INSTALLER
+-------------------------------
+
+Install Inno Setup from the official website:
+
+https://jrsoftware.org/isdl.php
+
+Open SkyCastInstaller.iss in Inno Setup Compiler.
+
+IMPORTANT:
+Make sure the [Files] source path points to the build folder you want to package.
+
+For the custom-icon build, the source should use:
+
+dist_icon\SkyCast\*
+
+Do not accidentally package an older dist\SkyCast folder.
+
+The installer should include the entire packaged application folder, including _internal.
+
+Compile using:
+
+Build > Compile
+
+Or press Ctrl + F9.
+
+The output installer is saved in the output directory configured in SkyCastInstaller.iss.
+
+The installer can provide:
+- Start Menu shortcut
+- Desktop shortcut
+- Uninstall option
+- Launch application option after installation
+
+Do not include your private .env file in a public installer. The installed app needs its own valid API configuration.
+
+
+12. WHERE TO PUT .env
+---------------------
+
+For the Python source version:
+
+SkyCast project root\.env
+
+This is beside main.py and config.py.
+
+For the packaged EXE version:
+
+dist_icon\SkyCast\.env
+
+This is beside SkyCast.exe.
+
+For the installed version:
+
+The .env file must be beside the installed SkyCast.exe when using the current configuration approach.
+
+Do not place .env inside _internal or assets.
+
+
+13. TROUBLESHOOTING
+-------------------
+
+API KEY MISSING:
+- Check that .env exists in the correct folder.
+- Check that the variable is named OPENWEATHERMAP_API_KEY.
+- Check that the file is named .env, not .env.txt.
+- Restart SkyCast after changing the file.
+
+CITY NOT FOUND:
+- Check the spelling of the city.
+- Try a supported ZIP/postal code.
+
+NETWORK ERROR:
+- Check your internet connection.
+- Check whether the API key is valid and active.
+
+LOCATION ERROR:
+- Allow location access in the browser.
+- Check Windows location settings.
+- The local location server uses port 8765.
+- Use city search if browser location is unavailable.
+
+MISSING WEATHER ICONS:
+- Check that PNG files exist in assets\weather.
+- Rebuild the EXE after changing packaged assets.
+
+PYINSTALLER ACCESS DENIED:
+- Close running SkyCast windows.
+- Check for processes using the build folder.
+- Use separate build and output folders if needed.
+- Do not accidentally delete your .env file.
+
+
+14. SECURITY CHECKLIST
+----------------------
+
+- Keep .env in .gitignore.
+- Keep placeholder values only in .env.example.
+- Never upload the real API key to GitHub.
+- Do not include personal API keys in public installers.
+- Rotate the API key if it is accidentally exposed.
+
+
+15. QUICK COMMAND REFERENCE
+---------------------------
+
+Run the source application:
+
+python main.py
+
+Build the custom-icon EXE:
+
+python -m PyInstaller --noconfirm --clean --windowed --name SkyCast --icon "assets\SkyCast.ico" --add-data "assets;assets" --distpath ".\dist_icon" --workpath ".\build_icon" main.py
+
+Run the packaged EXE:
+
+Start-Process ".\dist_icon\SkyCast\SkyCast.exe" -WorkingDirectory ".\dist_icon\SkyCast"
+
+
+SkyCast — Weather at a glance.

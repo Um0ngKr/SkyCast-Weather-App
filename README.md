@@ -1,21 +1,72 @@
-# SkyCast Modular Weather App
+# 🌤️ SkyCast — Modular Weather App
 
-SkyCast is a Windows desktop weather application built with Python, CustomTkinter, and the OpenWeatherMap API. It features a modern dark interface, soft blue accents, realistic 3D-style weather icons, current weather details, and forecast information.
+**A modern Windows desktop weather application built with Python, CustomTkinter, and the OpenWeatherMap API.**
 
-## Features
+SkyCast brings current weather conditions and forecast information into a clean, dark-themed desktop dashboard with soft blue accents, realistic weather icons, location detection, and temperature conversion.
 
-- Search weather by city name or supported ZIP/postal code.
+The project supports both Python-based development and a packaged Windows application, including a custom SkyCast icon and a Windows installer with Start Menu and Desktop shortcuts.
+
+---
+
+## ✨ Features
+
+### 🌦️ Weather Dashboard
+- Search for weather by city name or supported ZIP/postal code.
 - Display current temperature and weather conditions.
 - View humidity, wind speed, and precipitation.
+- Show feels-like temperature and weather descriptions.
 - Switch between Celsius and Fahrenheit.
-- View forecast entries within the next six hours, when available.
-- View a daily summary of the available five-day forecast.
-- Retrieve weather using browser-based geolocation.
-- Support approximate IP-based city detection.
-- Load local weather icons with an online fallback.
-- Display readable errors for common API, location, and network issues.
+- View available forecast entries within the next six hours.
+- Explore a daily summary of the available five-day forecast.
 
-## Project Structure
+### 📍 Location Services
+- Browser-based geolocation using device location permission.
+- Approximate city detection based on public IP address.
+- Search manually by city or supported ZIP/postal code when location detection is unavailable.
+- Local browser-location server running on `127.0.0.1:8765`.
+
+### 🎨 Interface and Icons
+- Modern dark dashboard with soft blue accents.
+- Reusable UI components and weather cards.
+- Local weather icons with an online fallback.
+- Custom SkyCast application icon in Windows ICO format.
+- Scrollable dashboard layout.
+
+### 🪟 Windows Application
+- Packaged Windows executable using PyInstaller.
+- Windows installer created with Inno Setup.
+- Start Menu shortcut.
+- Optional Desktop shortcut.
+- Application uninstall support.
+- Separate development and packaged-app workflows.
+
+---
+
+## 🖥️ Application Preview
+
+SkyCast provides a desktop dashboard featuring current weather, weather metrics, temperature controls, location search, and forecast information.
+
+The application uses a dark interface with high-contrast typography and weather icons to keep important information easy to read.
+
+---
+
+## 🧰 Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Python 3.10+ | Application logic |
+| CustomTkinter | Desktop interface |
+| Requests | HTTP requests to weather services |
+| Pillow | Image loading and processing |
+| python-dotenv | Environment-variable configuration |
+| Flask | Local browser-geolocation server |
+| OpenWeatherMap API | Current weather and forecast data |
+| PyInstaller | Packaging Python into a Windows executable |
+| Inno Setup | Building the Windows installer |
+
+---
+
+## 📁 Project Structure
 
 ```text
 SkyCast_Modular/
@@ -23,10 +74,15 @@ SkyCast_Modular/
 ├── config.py
 ├── location_server.py
 ├── requirements.txt
+├── README.md
+├── .env
 ├── .env.example
 ├── .gitignore
-├── README.md
+├── SkyCast.spec
+├── SkyCastInstaller.iss
+│
 ├── assets/
+│   ├── SkyCast.ico
 │   └── weather/
 │       ├── sun.png
 │       ├── moon.png
@@ -38,38 +94,178 @@ SkyCast_Modular/
 │       ├── thunderstorm.png
 │       ├── snow.png
 │       └── fog.png
+│
 ├── components/
 │   ├── __init__.py
 │   ├── cards.py
 │   └── weather_icons.py
+│
 ├── services/
 │   ├── __init__.py
 │   ├── location.py
 │   └── weather_api.py
-└── ui/
-    ├── __init__.py
-    └── app.py
+│
+├── ui/
+│   ├── __init__.py
+│   └── app.py
+│
+├── dist/
+├── dist_fixed/
+├── dist_icon/
+├── build/
+├── build_fixed/
+├── build_icon/
+└── installer_output/
 ```
 
-## Main Components
+**Note:** Build folders and generated executables are local development artifacts. They may differ between machines and should not be assumed to exist in a fresh Git clone. The `.env` file is private and must not be committed to the repository.
 
-- `main.py` — Starts the application.
-- `config.py` — Loads environment variables and stores API configuration.
-- `ui/app.py` — Implements the main dashboard, search, current conditions, metrics, and forecasts.
-- `services/weather_api.py` — Fetches current weather and forecast data from OpenWeatherMap.
-- `services/location.py` — Provides approximate city detection based on public IP.
-- `location_server.py` — Runs the local server used for browser-based geolocation.
-- `components/weather_icons.py` — Maps weather codes to local icons, processes images, and provides an online fallback.
-- `components/cards.py` — Provides reusable UI cards and labels.
-- `assets/weather/` — Stores the local weather icon PNG files.
-- `.env.example` — Provides a template for the API key environment variable.
-- `.gitignore` — Excludes sensitive files and generated files from version control.
+---
 
-## Weather Icons
+## 🧩 Main Components
 
-The application uses local PNG icons stored in `assets/weather/`.
+| File | Responsibility |
+|---|---|
+| `main.py` | Application entry point |
+| `config.py` | API configuration, environment variables, and theme constants |
+| `ui/app.py` | Main dashboard, search, current weather, metrics, and forecasts |
+| `services/weather_api.py` | Retrieves current weather and forecast data |
+| `services/location.py` | Approximate IP-based city detection |
+| `location_server.py` | Local server for browser-based geolocation |
+| `components/cards.py` | Reusable cards, labels, and UI elements |
+| `components/weather_icons.py` | Weather-code mapping, local icons, image processing, and online fallback |
+| `assets/weather/` | Local weather icon images |
+| `assets/SkyCast.ico` | Custom Windows application icon |
+| `config.py` | Loads the API key and defines reusable configuration |
+| `SkyCast.spec` | PyInstaller build configuration generated for the project |
+| `SkyCastInstaller.iss` | Inno Setup installer configuration |
 
-Supported icon assets:
+---
+
+## ⚙️ Requirements
+
+- Windows 10 or later
+- Python 3.10 or later
+- An OpenWeatherMap API key
+- An active internet connection
+- Inno Setup, if building the Windows installer
+- PyInstaller, if packaging the executable
+
+### Python Dependencies
+
+The project uses the following packages:
+
+- `requests`
+- `customtkinter`
+- `Pillow`
+- `python-dotenv`
+- `Flask`
+
+Install the project dependencies using the supplied `requirements.txt` file.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+
+```powershell
+git clone https://github.com/Um0ngKr/SkyCast-Weather-App.git
+cd SkyCast-Weather-App
+```
+
+Alternatively, download the repository as a ZIP file and extract it.
+
+### 2. Create a Virtual Environment
+
+```powershell
+python -m venv .venv
+```
+
+Activate the environment in PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks environment activation, use Command Prompt and run:
+
+```bat
+.venv\Scripts\activate.bat
+```
+
+### 3. Configure the API Key
+
+Create a file named `.env` in the project root. You can use `.env.example` as a template.
+
+Add your OpenWeatherMap API key:
+
+```dotenv
+OPENWEATHERMAP_API_KEY=your_api_key_here
+```
+
+Replace the placeholder with your own API key.
+
+**Security reminder:** Never upload your real `.env` file or API key to GitHub.
+
+### 4. Install Dependencies
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+### 5. Run SkyCast
+
+```powershell
+python main.py
+```
+
+The SkyCast desktop window should open. Weather information requires a valid API key and an internet connection.
+
+---
+
+## 📍 Location Features
+
+### Browser-Based Geolocation
+
+1. Click **Detect My Location** in SkyCast.
+2. Allow the browser to access your location when prompted.
+3. SkyCast uses the returned coordinates to retrieve weather information.
+
+The local location server uses `127.0.0.1` on port `8765`.
+
+If the browser does not grant location access, use the manual city search instead.
+
+### Approximate IP-Based Location
+
+SkyCast also supports approximate city detection based on the public IP address through `services/location.py`.
+
+IP-based location may not identify your exact physical location. Results depend on the network and the location service.
+
+---
+
+## 🌤️ Forecast Information
+
+SkyCast uses OpenWeatherMap current-weather and five-day forecast data.
+
+The standard five-day forecast endpoint supplies forecast entries at three-hour intervals.
+
+SkyCast uses the available forecast data to:
+- Display upcoming forecast entries within the next six hours, when available.
+- Group available entries by calendar day for a daily forecast summary.
+- Show weather descriptions and temperatures for forecast entries.
+
+Forecast availability and accuracy depend on the API response and the selected location.
+
+---
+
+## 🖼️ Weather Icons and Application Branding
+
+SkyCast includes local weather icons in `assets/weather/` and a custom Windows application icon at `assets/SkyCast.ico`.
+
+### Local Weather Icons
+
+The supported icon files include:
 
 - `sun.png`
 - `moon.png`
@@ -82,110 +278,184 @@ Supported icon assets:
 - `snow.png`
 - `fog.png`
 
-The icon loader maps OpenWeatherMap condition codes to these files, converts images to RGBA, and resizes them for display. If a matching local icon is unavailable, the application attempts to download an online icon.
+The icon loader maps weather conditions to local image assets, processes images for display, and attempts an online fallback when a local icon is unavailable.
 
-Keep the icon files in `assets/weather/` so the application can load them correctly.
+Keep the original image files in `assets/weather/` when running or packaging the application.
 
-## Requirements
+### Windows Application Icon
 
-- Windows
-- Python 3.10 or later
-- An OpenWeatherMap API key
-- An active internet connection
+The custom `assets/SkyCast.ico` file is used when building the Windows executable with PyInstaller.
 
-The project uses these Python packages:
+The Desktop shortcut icon can also be changed through Windows shortcut properties. Updating the shortcut icon alone does not change the executable's embedded icon.
 
-- `requests`
-- `customtkinter`
-- `Pillow`
-- `python-dotenv`
-- `Flask` for the local location server
+---
 
-## Installation and Setup
+## 📦 Building the Windows Executable
 
-### 1. Open the Project
+SkyCast uses PyInstaller to package the Python application.
 
-Open the `SkyCast_Modular` folder in Visual Studio Code.
+First, make sure the virtual environment is activated and the dependencies are installed.
 
-### 2. Create a Virtual Environment
-
-Open the VS Code terminal and run:
+### Build with the Default Application Icon
 
 ```powershell
-python -m venv .venv
+python -m PyInstaller --noconfirm --clean --windowed --name SkyCast --add-data "assets;assets" main.py
 ```
 
-Activate the environment in PowerShell:
+### Build with the Custom SkyCast Icon
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+python -m PyInstaller --noconfirm --clean --windowed --name SkyCast --icon "assets\SkyCast.ico" --add-data "assets;assets" --distpath ".\dist_icon" --workpath ".\build_icon" main.py
 ```
 
-### 3. Configure the API Key
+The custom-icon build produces the application under:
 
-Copy `.env.example` to a new file named `.env` in the project root.
-
-Add your OpenWeatherMap API key:
-
-```dotenv
-OPENWEATHERMAP_API_KEY=your_api_key_here
+```text
+dist_icon/
+└── SkyCast/
+    ├── SkyCast.exe
+    └── _internal/
 ```
 
-Replace the placeholder with your actual API key. Keep the real key private.
+The complete output folder must be retained. The executable depends on its packaged support files.
 
-### 4. Install Dependencies
+### Test the Packaged Application
 
-```powershell
-python -m pip install -r requirements.txt
-```
+Run the generated executable and verify:
 
-### 5. Run the Application
+- The application opens successfully.
+- The custom icon appears where expected.
+- The API key loads correctly.
+- Current weather and forecasts work.
+- Search and temperature conversion work.
+- Location features behave as expected.
 
-```powershell
-python main.py
-```
+For a packaged application, configuration files must be available at the path expected by `config.py`. The application code loads `.env` from the executable's directory when running in PyInstaller's frozen mode.
 
-## Location Features
+Do not assume that a fresh build automatically contains your private `.env` file.
 
-### Browser-Based Geolocation
+---
 
-Select **Detect My Location** in the application. A local SkyCast page opens in your browser and requests permission to access your location.
+## 🪟 Building the Windows Installer
 
-Allow permission to retrieve weather for the detected coordinates.
+SkyCast uses Inno Setup to create a Windows installer.
 
-If location access is denied or unavailable, use the city or ZIP/postal-code search instead.
+The installer configuration is maintained in `SkyCastInstaller.iss`.
 
-The local location server uses `127.0.0.1` on port `8765`. If another application is using this port, the location server may not start.
+### Installer Features
 
-### IP-Based Location
+- Installs the packaged application.
+- Creates a Start Menu shortcut.
+- Supports an optional Desktop shortcut.
+- Registers an uninstall entry.
+- Offers to launch SkyCast after installation.
 
-The `services/location.py` module supports approximate city detection based on your public IP address. This method may be inaccurate and depends on the location service and network configuration.
+### Build the Installer
 
-## Forecast Information
+1. Build and test the latest executable with PyInstaller.
+2. Open `SkyCastInstaller.iss` in Inno Setup Compiler.
+3. Ensure that the script's source path points to the intended build folder.
+4. Compile the script using **Build → Compile** or `Ctrl + F9`.
+5. Locate the generated installer in the configured output directory.
 
-OpenWeatherMap's standard five-day forecast endpoint provides forecast data at three-hour intervals.
+The installer source must include the entire packaged application directory, including `_internal`.
 
-SkyCast uses the available data to display upcoming forecast entries and group entries by calendar day.
+**Important:** If the build output changes from `dist\SkyCast` to `dist_icon\SkyCast`, update the source path in `SkyCastInstaller.iss` before compiling.
 
-The six-hour forecast section displays forecast entries that fall within the next six hours. It does not provide a separate forecast value for every hour. The amount of available forecast information depends on the API response.
+### API Key Configuration After Installation
 
-## Troubleshooting
+The installer does not automatically provide a valid personal API key.
 
-- **API key error:** Check that `.env` exists in the project root and contains a valid API key.
-- **Location not found:** Check the spelling of the city name or try a supported ZIP/postal code.
-- **Network error:** Check your internet connection.
-- **Browser location unavailable:** Allow location access in your browser and check your device's location settings.
-- **Missing dependencies:** Run `python -m pip install -r requirements.txt` in the correct Python environment.
-- **Port conflict:** Check whether another application is using port `8765`.
-- **Weather icons missing:** Confirm that the PNG files exist in `assets/weather/`. An internet connection may be needed for the online icon fallback.
+For the current configuration approach, `config.py` loads `.env` from beside the executable. A fresh installation therefore needs a valid `.env` in the installed application's directory, or an alternative configuration mechanism implemented in the application.
 
-## Security
+Never distribute an installer containing your personal API key.
 
-- Store the real API key in `.env`.
-- Keep `.env.example` limited to placeholder values.
-- Make sure `.gitignore` excludes `.env`, Python cache files, and virtual environments.
-- If an API key is accidentally exposed, revoke or rotate it through the API provider.
+---
 
-## License
+## 🛠️ Troubleshooting
 
-No license is included by default. Add a `LICENSE` file if you plan to distribute the project publicly.
+### API Key Missing
+
+- Verify that `.env` exists in the expected application directory.
+- Confirm that the variable is named `OPENWEATHERMAP_API_KEY`.
+- Make sure the key is not empty and that the file is named `.env`, not `.env.txt`.
+- Restart the application after changing the configuration.
+
+### Invalid API Key or API Error
+
+- Check the API key in your OpenWeatherMap account.
+- Confirm internet connectivity.
+- Check whether the API key is active and whether the requested API endpoint is available to your account.
+
+### City Not Found
+
+- Check the spelling of the city name.
+- Try a supported ZIP/postal code and the appropriate country code if required.
+
+### Location Detection Not Working
+
+- Allow browser location permission.
+- Check Windows location settings.
+- Verify that the local server can use port `8765`.
+- Use manual city search if location access is unavailable.
+
+### Missing Weather Icons
+
+- Verify that the PNG assets are present in `assets/weather/`.
+- Rebuild the executable after changing packaged assets.
+- Check internet connectivity if the online icon fallback is needed.
+
+### PyInstaller Access Denied
+
+- Close all running SkyCast processes.
+- Check whether another application is using files inside the build output.
+- Use separate build and distribution directories if existing files cannot be cleaned safely.
+
+### Desktop Shortcut Still Shows an Old Icon
+
+- Confirm that the shortcut points to the intended executable.
+- Reapply the icon through **Properties → Shortcut → Change Icon**.
+- Refresh the Desktop or recreate the shortcut if Windows continues to show a cached icon.
+
+---
+
+## 🔐 Security
+
+- Keep the real API key in `.env`.
+- Commit only placeholder values in `.env.example`.
+- Ensure `.gitignore` excludes `.env`, Python cache files, and virtual environments.
+- Never publish personal API keys in source code, screenshots, or installer files.
+- Rotate the key if it is accidentally exposed.
+
+An API key included in a distributed desktop application cannot be treated as a fully secret credential. For public distribution, consider a separate backend service or an appropriate restricted-key strategy.
+
+---
+
+## 🗺️ Roadmap
+
+Potential future improvements include:
+
+- Light and dark theme switching.
+- Additional weather metrics and improved forecast visualizations.
+- More robust first-run API-key configuration.
+- Better location-permission handling.
+- Automated release builds.
+- Expanded application branding and documentation.
+
+---
+
+## 📄 License
+
+No license is included by default. Add a `LICENSE` file before granting others permission to reuse, modify, or distribute the project.
+
+---
+
+## 👨‍💻 Author
+
+**Umang Kr**
+
+GitHub Repository: [SkyCast Weather App](https://github.com/Um0ngKr/SkyCast-Weather-App)
+
+---
+
+*SkyCast — Weather at a glance.* 🌤️
